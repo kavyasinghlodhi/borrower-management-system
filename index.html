@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" type="image/x-icon" href="logo.svg">
+  <link rel="shortcut icon" href="logo.svg" type="image/x-icon">
+  <title>Baad Ka Payment</title>
+  <style>
+    .edit-menu {
+      display: none;
+    }
+
+    .hide-show-2 {
+      display: none;
+    }
+
+    .add {
+      height: 100px;
+      width: 100px;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      background: orange;
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      font-size: 90px;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .add span {
+      margin-top: -20px;
+    }
+
+    @media only screen and (max-width: 760px),
+    (min-device-width: 768px) and (max-device-width: 1024px) {
+      tr {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid black !important;
+        margin-bottom: 19px;
+      }
+
+      .td-row {
+        display: none;
+      }
+
+      thead {
+        display: none;
+      }
+
+      .add {
+        height: 70px;
+        width: 70px;
+        bottom: 10px;
+        right: 8px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="style.css">
+  <!-- <link href="style.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous"> -->
+</head>
+
+<body>
+  <div class="add" onclick="show_add_box()"><span>+</span></div>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Settings</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <b><u>Backup</u></b><br><br>
+          <button class="btn btn-primary" onclick="backup_make()">Make Backup</button><br><br>
+          <div class="make-backup" style="display: none;">
+            <div class="alert alert-primary" role="alert">
+              Text copied to clipboard.
+            </div>
+            <p><b>Important: Please save the copied item somewhere where it will be safe and would not be lost. The
+                copied item is your Backup and you can't successfully backup without the copied data.</b></p>
+            <div class="form-floating">
+              <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+              <label for="floatingTextarea">Backup Code</label>
+            </div>
+            <br>
+          </div>
+          <button class="btn btn-primary" onclick="document.querySelector('.upload-backup').style.display = 'block'">Upload Backup</button>
+          <div class="upload-backup" style="display: none;">
+            <br>
+            <p><b>Please paste the backup code here.</b></p>
+            <div class="form-floating">
+              <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+              <label for="floatingTextarea">Backup Code</label><br>
+              <button class="btn btn-success" onclick="backup_upload()">Upload</button>
+            </div>
+          </div>
+          <br><br>
+          <b><u>Contact</u></b> <br><br>
+          <b>Email:</b> email.kslodhi@gmail.com <br>
+          <b>Phone:</b> +91 7415652449
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Settings</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Settings</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal">Mark as Paid</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav class="navbar bg-dark border-bottom border-bottom-dark" data-bs-theme="dark">
+    <div class="container-fluid">
+      <img src="setting.svg" height="30" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      <a class="navbar-brand" href="#">Baad Ka Payment</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <!-- <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Dropdown
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled">Disabled</a>
+              </li> -->
+        </ul>
+        <div class="d-flex">
+          <input class="form-control me-2" onclick="search()" id="search-main" type="search" placeholder="Search"
+            aria-label="Search">
+          <button class="btn btn-outline-success" onclick="search()">Search</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div id="liveAlertPlaceholder"></div>
+  <div class="hide-show-2">
+    <div class="container mt-2">
+      <br>
+      <h1>Add Borrower</h1>
+      <form>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">Phone</label>
+          <input id="add-phone" type="number" class="input form-control">
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Name</label>
+          <input type="text" class="input form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        </div>
+
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Total Amount of Good/Service</label>
+          <input onkeyup="comma('#add-amt')" id="add-amt" type="text" class="input form-control"
+            aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">Amount Paid</label>
+          <input onkeyup="comma('#add-paid')" id="add-paid" type="text" class="input form-control">
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="add_b()" id="liveAlertBtn">Add Borrower</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="hide-show">
+    <div class="container edit-menu mt-2">
+      <br>
+      <h1>Edit Borrower</h1>
+      <form>
+
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">Phone</label>
+          <input type="number" class="edit-input form-control" id="exampleInputPassword1" disabled>
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Name</label>
+          <input type="text" class="edit-input form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Total Amount of Good/Service</label>
+          <input onkeyup="comma('#add-amt2')" id="add-amt2" type="text" class="edit-input form-control"
+            aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">Amount Paid</label>
+          <input onkeyup="comma('#add-paid2')" id="add-paid2" type="text" class="edit-input form-control">
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="edit_add()" id="liveAlertBtn2">Edit Borrower</button>
+      </form>
+      <br>
+      <hr>
+    </div>
+
+
+    <div class="container mt-2">
+      <br>
+      <h1>List of All Borrowers</h1>
+      <table class="table table-responsive{-sm|-md|-lg|-xl}">
+      </table>
+      <b>
+        <p>Borrowers who have already paid.</p>
+      </b>
+      <table class="table">
+      </table>
+    </div>
+  </div>
+  <br><br><br>
+
+
+  <script>
+    const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
+    const appendAlert = (message, type) => {
+      const wrapper = document.createElement('div')
+      wrapper.innerHTML = [
+        `<div class="alert alert-${type} alert-dismissible" role="alert">`,
+        `   <div>${message}</div>`,
+        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+        '</div>'
+      ].join('')
+
+      alertPlaceholder.append(wrapper)
+    }
+  </script>
+  <script>
+
+    function comma(a) {
+      let inputElement = document.querySelector(a);
+      var tempNumber = inputElement.value.replaceAll(",", "");
+      if (isFinite(tempNumber) == true) {
+        if (tempNumber.replaceAll(" ", "") != "") {
+          var commaSeparatedNumber = parseInt(tempNumber).toLocaleString("en-IN");
+          console.log(commaSeparatedNumber)
+          inputElement.value = commaSeparatedNumber;
+        }
+      }
+      else {
+        inputElement.value = tempNumber.slice(0, -1)
+      }
+    }
+    function cross() {
+      if (document.querySelector(".add").style.transform == "rotate(45deg)") {
+        document.querySelector(".add").style.transform = "rotate(0deg)"
+        document.querySelector(".hide-show-2").style.display = "none"
+      } else {
+        document.querySelector(".add").style.transform = "rotate(45deg)"
+      }
+    }
+    function add_b() {
+      num = document.querySelectorAll(".input")[0].value
+      naam = document.querySelectorAll(".input")[1].value
+      total = document.querySelectorAll(".input")[2].value
+      paid = document.querySelectorAll(".input")[3].value
+
+      if (num.replaceAll(" ", "") == "" || total.replaceAll(" ", "") == "") {
+        appendAlert("All fields marked with (*) could not be left blank!", "danger")
+      }
+      else {
+        if (data.includes(num) == true) {
+          appendAlert("A  borrower with same phone number already exists!", "danger")
+        }
+        else {
+          if (naam.replaceAll(" ", "") == "") {
+            naam = "No name"
+          }
+          if (paid.replaceAll(" ", "") == "") {
+            paid = "0"
+          }
+          a = [naam, total, paid]
+          console.log(a)
+          localStorage.setItem(num, JSON.stringify(a))
+          get_it_paid()
+          appendAlert(`Borrower ${num} added successfully!`, "success")
+          document.querySelector(".hide-show-2").style.display = "none"
+          cross()
+        }
+      }
+
+    }
+    function delete_(a) {
+      document.querySelector("#exampleModal2").querySelectorAll(".modal-body")[0].innerHTML = `<b>Do you really want to delete ${a}?</b>`
+      document.querySelector("#exampleModal2").querySelectorAll("button")[2].addEventListener("click",function () {
+        localStorage.removeItem(a)
+        get_it_paid()
+        appendAlert(`Borrower ${a} deleted successfully!`, 'success')
+        window.scrollTo(0, 0)
+      })
+    }
+
+    function show_() {
+      document.querySelector(".edit-menu").style.display = "block"
+    }
+
+    function edit_(a) {
+      show_()
+      b = JSON.parse(localStorage.getItem(a))
+      document.querySelectorAll(".edit-input")[0].value = a
+      document.querySelectorAll(".edit-input")[1].value = b[0]
+      document.querySelectorAll(".edit-input")[2].value = b[1]
+      document.querySelectorAll(".edit-input")[3].value = b[2]
+      get_it_paid()
+      document.querySelector(".hide-show-2").style.display = "none"
+      window.scrollTo(0, 0)
+      cross()
+    }
+    function edit_add() {
+      num = document.querySelectorAll(".edit-input")[0].value
+      naam = document.querySelectorAll(".edit-input")[1].value
+      total = document.querySelectorAll(".edit-input")[2].value.replaceAll(",","")
+      paid = document.querySelectorAll(".edit-input")[3].value.replaceAll(",","")
+
+
+      if (num.replaceAll(" ", "") == "" || total.replaceAll(" ", "") == "") {
+        appendAlert("All fields marked with (*) could not be left blank!", "danger")
+      }
+      else {
+        if (naam.replaceAll(" ", "") == "") {
+          naam = "No name"
+        }
+        if (paid.replaceAll(" ", "") == "") {
+          paid = "0"
+        }
+        a = [naam, total, paid]
+        console.log(a)
+        localStorage.setItem(num, JSON.stringify(a))
+        get_it_paid()
+        document.querySelector(".edit-menu").style.display = "none"
+        window.scrollTo(0, 0)
+        appendAlert(`Borrower ${num} edited successfully!`, "success")
+
+      }
+    }
+
+
+    function paid_(a) {
+      document.querySelector("#exampleModal3").querySelectorAll(".modal-body")[0].innerHTML = `<b>Do you really want to mark ${a} as paid?</b>`
+      document.querySelector("#exampleModal3").querySelectorAll("button")[2].addEventListener("click",function () {
+        b = JSON.parse(localStorage.getItem(a))
+        num = a
+        naam = b[0]
+        total = b[1]
+        paid = b[2]
+        a_ = [naam, total, total]
+        localStorage.setItem(num, JSON.stringify(a_))
+        get_it_paid()
+        appendAlert(`Borrower ${a} marked as paid successfully!`, 'success')
+        window.scrollTo(0, 0)
+      })
+    }
+
+
+    function get_it() {
+      document.querySelector("table").innerHTML = `
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Phone</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Total Amount</th>
+                  <th scope="col">Amount Paid</th>
+                  <th scope="col">Amount To Be Collected</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+            `
+      a_ = []
+      data = []
+      j = 0
+      for (let i = 0; i < Object.keys(localStorage).length; i++) {
+        if (screen.width > 500) {
+          if (parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[1]) - parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[2]) != 0) {
+            document.querySelector("table").innerHTML += `
+                          <tr>
+                              <td class="td-row">${j + 1}</td>
+                              <td>${Object.keys(localStorage)[i]}</td>
+                              <td>${JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[0]}</td>
+                              <td>${parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[1]).toLocaleString("en-IN")}</td>
+                              <td>${parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[2]).toLocaleString("en-IN")}</td>
+                              <td><b>${(parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[1]) - parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[2])).toLocaleString("en-IN")}</b></td>
+                              <td>
+                                  <button data-bs-toggle="modal" data-bs-target="#exampleModal2" class="btn-danger btn" onclick="delete_(${Object.keys(localStorage)[i]})">Delete</button>
+                                  <button class="btn-warning btn" onclick="edit_(${Object.keys(localStorage)[i]})">Edit</button>
+                                  <button data-bs-toggle="modal" data-bs-target="#exampleModal3" class="btn-success btn" onclick="paid_(${Object.keys(localStorage)[i]})">Mark as Paid</button>
+                              </td>
+                          </tr>
+                      `
+            j += 1
+            a_.push(Object.keys(localStorage)[i])
+            data.push(Object.keys(localStorage)[i])
+          }
+        }
+        else {
+          if (parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[1]) - parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[2]) != 0) {
+            document.querySelector("table").innerHTML += `
+                          <tr>
+                              <td class="td-row">${j + 1}</td>
+                              <td>Phone - ${Object.keys(localStorage)[i]}</td>
+                              <td>Name - ${JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[0]}</td>
+                              <td>Total Amount - ${parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[1]).toLocaleString("en-IN")}</td>
+                              <td>Paid Amount - ${parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[2]).toLocaleString("en-IN")}</td>
+                              <td>Amount to be collected - <b>${(parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[1]) - parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[2])).toLocaleString("en-IN")}</b></td>
+                              <td>
+                                  <button data-bs-toggle="modal" data-bs-target="#exampleModal2" class="btn-danger btn" onclick="delete_(${Object.keys(localStorage)[i]})">Delete</button>
+                                  <button class="btn-warning btn" onclick="edit_(${Object.keys(localStorage)[i]})">Edit</button>
+                                  <button data-bs-toggle="modal" data-bs-target="#exampleModal3" class="btn-success btn" onclick="paid_(${Object.keys(localStorage)[i]})">Mark as Paid</button>
+                              </td>
+                          </tr>
+                      `
+            j += 1
+            a_.push(Object.keys(localStorage)[i])
+            data.push(Object.keys(localStorage)[i])
+          }
+        }
+      }
+      if (a_.length == 0) {
+        document.querySelectorAll("table")[0].innerText = "No one"
+      }
+
+    }
+    function get_it_paid() {
+      document.querySelectorAll("table")[1].innerHTML = `
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Name</th>
+                <th scope="col">Total Amount</th>
+                <th scope="col">Amount Paid</th>
+                <th scope="col">Amount To Be Collected</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            `
+      a__ = []
+      for (let i = 0; i < Object.keys(localStorage).length; i++) {
+        if (screen.width < 500) {
+          if (parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[1]) - parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[2]) == 0) {
+            a__.push(Object.keys(localStorage))
+            document.querySelectorAll("table")[1].innerHTML += `
+                        <tr>
+                            <td class="td-row">${i + 1}</td>
+                            <td>Phone - ${Object.keys(localStorage)[i]}</td>
+                            <td>Name - ${JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[0]}</td>
+                            <td>Total Amount - ${parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[1]).toLocaleString("en-IN")}</td>
+                            <td>Paid Amount - ${parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[2]).toLocaleString("en-IN")}</td>
+                            <td>Amount to be collected - ${(parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[1]) - parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[2])).toLocaleString("en-IN")}</td>
+                            <td>
+                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal2" onclick="delete_(${Object.keys(localStorage)[i]})">Delete</button>
+                                <button class="btn btn-warning" onclick="edit_(${Object.keys(localStorage)[i]})">Edit</button>
+                                <button disabled data-bs-toggle="modal" data-bs-target="#exampleModal3" class="btn btn-success" onclick="paid_(${Object.keys(localStorage)[i]})">Mark as Paid</button>
+                            </td>
+                        </tr>
+                    `
+          }
+        }
+        else {
+          if (parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[1]) - parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[2]) == 0) {
+            a__.push(Object.keys(localStorage))
+            document.querySelectorAll("table")[1].innerHTML += `
+                        <tr>
+                            <td class="td-row">${i + 1}</td>
+                            <td>${Object.keys(localStorage)[i]}</td>
+                            <td>${JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[0]}</td>
+                            <td>${parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[1]).toLocaleString("en-IN")}</td>
+                            <td>${parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[2]).toLocaleString("en-IN")}</td>
+                            <td>${(parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[1]) - parseInt(JSON.parse(localStorage.getItem(Object.keys(localStorage)[i]))[2])).toLocaleString("en-IN")}</td>
+                            <td>
+                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal2" onclick="delete_(${Object.keys(localStorage)[i]})">Delete</button>
+                                <button class="btn btn-warning" onclick="edit_(${Object.keys(localStorage)[i]})">Edit</button>
+                                <button disabled data-bs-toggle="modal" data-bs-target="#exampleModal3" class="btn btn-success" onclick="paid_(${Object.keys(localStorage)[i]})">Mark as Paid</button>
+                            </td>
+                        </tr>
+                    `
+          }
+        }
+
+      }
+      if (a__.length == 0) {
+        document.querySelectorAll("table")[1].innerText = "No one"
+      }
+
+      get_it()
+    }
+
+
+    get_it_paid()
+
+    function show_add_box() {
+      document.querySelector(".hide-show-2").style.display = "block"
+      document.querySelector(".edit-menu").style.display = "none"
+      window.scrollTo(0, 0)
+      cross()
+    }
+
+    function search() {
+      term = document.querySelector("#search-main").value.toLowerCase()
+
+      for (let i = 0; i < document.querySelectorAll("tr").length; i++) {
+        a = document.querySelectorAll("tr")[i].innerHTML.toLowerCase().includes(term)
+        if (a != true) {
+          document.querySelectorAll("tr")[i].style.display = "none"
+        }
+        else {
+
+          if (screen.width < 500) {
+            document.querySelectorAll("tr")[i].style.display = "flex"
+          }
+          else {
+            document.querySelectorAll("tr")[i].style.display = "table-row"
+          }
+        }
+      }
+    }
+
+    function backup_make() {
+
+      document.querySelector(".make-backup").querySelector("textarea").innerText = JSON.stringify(localStorage)
+      document.querySelector('.make-backup').style.display = 'block'
+      navigator.clipboard.writeText(JSON.stringify(localStorage));
+
+    }
+    function backup_upload() {
+
+      a = document.querySelector(".upload-backup").querySelector("textarea").value
+      
+      a = JSON.parse(a)
+      for (let i = 0; i < Object.keys(a).length; i++) {
+        b = a[Object.keys(a)[i]]
+        localStorage.setItem(Object.keys(a)[i], b)
+      }
+
+    }
+
+    function doc_keyUp(e) {
+      if (e.ctrlKey && e.code === 'KeyI') {
+        show_add_box();
+      }
+    }
+
+    window.addEventListener('keyup', doc_keyUp, false);
+
+    window.addEventListener("keyup", function () {
+      search()
+    })
+    window.addEventListener("click", function () {
+      search()
+    })
+
+    function change_tr() {
+      if (screen.width < 500) {
+        trs = document.querySelectorAll("table")[0].querySelectorAll("tr")
+        for (let i = 1; i < trs.length; i++) {
+          tr_text = trs[i].querySelectorAll("td")[1].innerText
+          trs[i].querySelectorAll("td")[1].innerText = `Phone - ${tr_text}`
+          tr_text = trs[i].querySelectorAll("td")[2].innerText
+          trs[i].querySelectorAll("td")[2].innerText = `Name - ${tr_text}`
+          tr_text = trs[i].querySelectorAll("td")[3].innerText
+          trs[i].querySelectorAll("td")[3].innerText = `Total - ${tr_text}`
+          tr_text = trs[i].querySelectorAll("td")[4].innerText
+          trs[i].querySelectorAll("td")[4].innerText = `Amount Paid - ${tr_text}`
+          tr_text = trs[i].querySelectorAll("td")[5].innerText
+          trs[i].querySelectorAll("td")[5].innerHTML = `To be collected - <b>${tr_text}</b>`
+        }
+        trs2 = document.querySelectorAll("table")[1].querySelectorAll("tr")
+        for (let i = 1; i < trs2.length; i++) {
+          tr_text = trs2[i].querySelectorAll("td")[1].innerText
+          trs2[i].querySelectorAll("td")[1].innerText = `Phone - ${tr_text}`
+          tr_text = trs2[i].querySelectorAll("td")[2].innerText
+          trs2[i].querySelectorAll("td")[2].innerText = `Name - ${tr_text}`
+          tr_text = trs2[i].querySelectorAll("td")[3].innerText
+          trs2[i].querySelectorAll("td")[3].innerText = `Total - ${tr_text}`
+          tr_text = trs2[i].querySelectorAll("td")[4].innerText
+          trs2[i].querySelectorAll("td")[4].innerText = `Amount Paid - ${tr_text}`
+          tr_text = trs2[i].querySelectorAll("td")[5].innerText
+          trs2[i].querySelectorAll("td")[5].innerHTML = `To be collected - <b>${tr_text}</b>`
+        }
+      }
+    }
+
+    const myModal = document.getElementById('exampleModal2')
+
+    myModal.addEventListener('shown.bs.modal', () => {
+      console.log("hello")
+    })
+
+  </script>
+  <script src="script.js"></script>
+  <!-- <script src="script.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script> -->
+</body>
+
+</html>
